@@ -22,24 +22,26 @@
                 <th> Prix Total </th>
             </tr>
         </thead>
-        <tbody>
+        <tbody>       
         <?php
-            var_dump($_SESSION);
-            if(isset($_SESSION["panier"])){
-                $panier = $_SESSION["panier"];
-                $quantity=1;
-                foreach($panier as $row){
-                    $tab[] = array_count_values($row);
+            $panierAff = [];
+            foreach($_SESSION["panier"] as $elem) {
+                if(in_array($elem["article"], $panierAff)) {
+                    continue;
                 }
-                var_dump($tab);
-                foreach($panier as $row => $article){
-                    echo '<tr>';
-                    echo    '<td>'.$article['article'].'</td>';
-                    echo    '<td>'.$article['prix'].'</td>';
-                    echo    '<td>'.$quantity.'</td>';
-                    echo    '<td>'.$quantity*$article['prix'].'</td>';
-                    echo '</tr>';
-                } 
+
+                $panierAff[] = $elem["article"];
+
+                $count = count(array_filter($_SESSION["panier"], function($v, $k) use($elem) {
+                    return $v["article"] == $elem["article"];
+                }, ARRAY_FILTER_USE_BOTH ));
+
+                echo "<tr>";
+                echo "<td>".$elem["article"]."</td>";
+                echo "<td>".$elem["prix"]."</td>";
+                echo "<td>".$count."</td>";
+                echo "<td>".$count*$elem["prix"]."</td>";
+                echo "</tr>";
             }
         ?>
       </tbody>
